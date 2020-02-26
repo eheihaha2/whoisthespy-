@@ -1,0 +1,133 @@
+package socket;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.PathParam;
+import javax.websocket.server.ServerEndpoint;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
+
+/*
+ * 要管的所有客户端
+ * 
+ * */
+@ServerEndpoint("/chatroom/{username}")
+public class socketServer3 {
+	private Session session;
+	private String username;
+	//当前服务端的所有客户端：用户名，当前用户的webSocket对象
+	private static Map<String, socketServer3> clients=new ConcurrentHashMap<String, socketServer3>();
+	@OnOpen
+	public void onOpen(Session session,@PathParam(value="username")String name) {
+		System.out.println("连接上线");
+		this.username=name;
+		this.session=session;
+		//当每次有连接建立，就往clients中添加连接对象：一对多
+		clients.put(username,this);
+		//put(被放入,放入)
+		//群发上线消息和用户列表消息
+		onLine();
+		try {
+			Thread.sleep(1000);
+		}catch (InterruptedException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		userList();
+	}
+	@OnMessage
+	public void onMessage(String message){
+	//解析收到的message，群定收到的消息是群发还是私发
+		JSONObject obj=JSON.parseObject(message);//将收到的字符串转成JSON
+		String head=obj.getString("head");
+		String data=obj.getString("data");
+		if(head.equals("sendAll")) {
+			sendAll(data);
+		}else if(head.equals("sendTo")) {
+			sendTo(data);
+		}
+	}
+	@OnClose
+	public void onClose() {
+		System.out.println("连接下线");
+	}
+	@OnError
+	public void onError(Throwable t) {
+	System.out.println("连接出错:"+t);	
+	}
+	
+	//服务器端会有4个方法来做四种操作
+	//服务器端群发消息
+	//{from:来自谁,msg:消息本身}
+	public void sendAll(String data) {
+		//将收到的消息群发出去
+		//Message msg=new Message();
+		JSONObject json=new JSONObject();
+		json.put("head","sendAll");
+		JSONObject datajson=new JSONObject();
+		datajson.put("from",this.username);
+		datajson.put("msg",data);
+		json.put("data",datajson);
+		System.out.println(json);
+		for(socketServer3 socket:clients.values()) {
+			socket.session.getAsyncRemote().sendText(json.toJSONString());
+		}
+	};
+	//服务器端私发消息
+	//{from:来自谁,msg:消息本身}
+	public void sendTo(String data) {
+	JSONObject dataJson=JSON.parseObject(data);
+	String to =dataJson.getString("to");
+	String msg=dataJson.getString("msg");
+	
+	JSONObject json=new JSONObject();
+	json.put("head","sendTo");
+	
+	JSONObject injson=new JSONObject();
+	injson.put("from",this.username);
+	injson.put("msg",msg);
+	System.out.println(injson);
+	json.put("data",injson);
+	
+	for(socketServer3 socket:clients.values()) {
+		if(socket.username.equals(to)) {
+			socket.session.getAsyncRemote().sendText(json.toJSONString());
+		}
+	}
+		
+	};
+	//服务器端群发上线消息
+	//{name:上线人姓名}
+	public void onLine() {
+		JSONObject json=new JSONObject();
+		json.put("head","onLine");
+		JSONObject datajson=new JSONObject();
+		System.out.println(this.username);
+		datajson.put("name",this.username);
+		json.put("data",datajson);
+		System.out.println(json);
+		for(socketServer3 socket:clients.values()) {
+			socket.session.getAsyncRemote().sendText(json.toJSONString());
+		}
+	};
+	//服务器端群发用户列表消息
+	//[用户1,用户2]
+	public void userList() {
+		JSONObject json=new JSONObject();
+		json.put("head","userList");
+		json.put("data",JSON.toJSONString(clients.keySet()));
+		System.out.println(JSON.toJSONString(clients.keySet()));
+		System.out.println(json);
+		for(socketServer3 socket:clients.values()) {
+			socket.session.getAsyncRemote().sendText(json.toJSONString());
+		}
+	};
+}

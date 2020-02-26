@@ -1,0 +1,61 @@
+package socket;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.PathParam;
+import javax.websocket.server.ServerEndpoint;
+
+
+
+
+/*
+ * 要管的所有客户端
+ * 
+ * */
+@ServerEndpoint("/chat/{username}")
+public class socketServer2 {
+	private Session session;
+	private String username;
+	//当前服务端的所有客户端：用户名，当前用户的webSocket对象
+	private static Map<String, socketServer2> clients=new ConcurrentHashMap<String, socketServer2>();
+	@OnOpen
+	public void onOpen(Session session,@PathParam(value="username")String username) {
+		System.out.println("连接上线");
+		this.session=session;
+		//当每次有连接建立，就往clients中添加连接对象：一对多
+		clients.put(username,this);
+		//put(被放入,放入)
+	}
+	@OnMessage
+	public void onMessage(String message){
+	
+	}
+	@OnClose
+	public void onClose() {
+		System.out.println("连接下线");
+	}
+	@OnError
+	public void onError(Throwable t) {
+	System.out.println("连接出错:"+t);	
+	}
+	
+	//服务器端会有4个方法来做四种操作
+	//服务器端群发消息
+	//{from:来自谁,msg:消息本身}
+	public void sendAll() {};
+	//服务器端私发消息
+	//{from:来自谁,msg:消息本身}
+	public void sendTo() {};
+	//服务器端群发上线消息
+	//{name:上线人姓名}
+	public void onLine() {};
+	//服务器端群发用户列表消息
+	//[{name:用户1的名字},{name:用户2的名字}]
+	public void userList() {};
+}

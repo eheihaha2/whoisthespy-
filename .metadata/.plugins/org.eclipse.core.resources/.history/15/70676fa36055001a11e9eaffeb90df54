@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+<style type="text/css">
+	#main{
+		border:1px solid red;
+	}
+	.room{
+		border:1px solid red;
+		magin-top:10px;
+</style>
+</head>
+<body>
+	<div id = "main">
+		<div class = "room">
+			<span class="roomId">1</span>
+			<span class="roomName">王者荣耀</span>			
+			<div class="userList">
+				<div class="user">
+					<span class="userName">hhh</span>
+					<span class="userLeverl">青铜</span>
+				</div>
+				<div class="user">
+					<span class="userName">yyy</span>
+					<span class="userLevel">白银</span>							
+				</div>		
+			</div>
+	</div>	
+	
+		<div class = "room">
+			<span class="roomId">2</span>
+			<span class="roomName">刺激战场</span>				
+			<div class="userList">
+				<div class="user">
+					<span class="userName">kkk</span>
+					<span class="userLeverl">黄金</span>
+				</div>
+				<div class="user">
+				<span class="userName">lll</span>
+				<span class="userLevel">星耀</span>							
+				</div>	
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+    $.ajax({
+      url:"RoomServlet",
+      type:"POST",
+      dataType:"json",
+      /* success:function(data) {
+    	  console.log(data);
+ 		//渲染界面
+ 		var roomDiv =$(".room").clone();
+ 		$.each(data,function(index,item){
+ 			console.log(item.roomName);
+ 			roomDiv.find(".roomName").text(item.roomName);
+ 			roomDiv.find("roomId").text(roomDiv.find(".roomId").text()+item.roomId);
+ 			
+ 			$.each(item.userList,function(index,userItem){
+ 				console.log(userItem.name);
+ 				roomDiv.find(".userId").text(roomDiv.find(".userId").text()+userItem)
+ 				roomDiv.find(".userName").text(roomDiv,find(",userName")).text()+userItem
+ 			})
+ 			$("#main").append(roomDiv);
+ 		})
+      } */
+      success:function(data){
+    	  for(var i=0;i<data.length;i++){
+    		  $("body").append(Room(data[i].roomId,data[i].readyNum,data[i].maxNum,User(data[i].userList)))
+    	  }
+      }
+     })
+    </script>
+</html>

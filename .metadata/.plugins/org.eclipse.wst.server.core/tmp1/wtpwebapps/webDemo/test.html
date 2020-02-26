@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/cityjson.js"></script>
+<script type="text/javascript">
+//console.log(data);
+//console.log(data[510000]);
+//console.log(data[510000].child);
+//console.log(data[510000].child[510100]);
+//console.log(data[510000].child[510100].child[510104]);
+//json对象有很多个键值对:
+$.each(data,function(index,item){
+	console.log(item);
+})
+for(var i=0;i<data.length;i++){
+	console.log(data[i]);
+}
+</script>
+</head>
+<body>
+<!-- 省:
+<select>
+</select>
+
+市:
+<select>
+</select>
+
+区:
+<select>
+</select> -->
+
+<div id="myDiv">test</div>
+</body>
+<script type="text/javascript">
+$(function(){
+	//Div其实就已经是一个节点，复制节点
+	var divEle=$("#myDiv")//.clone();
+	//$("body").append(divEle);//添加节点
+	alert(divEle);
+	
+	new info=divEle.text();//获得节点中的文本
+	alert(info);
+	//修改节点中的文本
+	divEle.text("Hello world");
+})
+</script>
+
+<!-- <script type="text/javascript">
+	$(function(){
+	//标签选择器:找到了节点
+	var eml =$("select");
+	console.log(eml[0]);
+	//增加节点：Option的节点
+	var opEle="<option>四川</option>";
+	(eml[0]).append(opEle);
+})
+</script> -->
+</html>

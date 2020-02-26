@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>游戏大厅</title>
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+<link rel="stylesheet" href="css/bootstrap.css">
+<link rel="stylesheet" href="css/lobby.css">
+<style type="text/css">
+		.room{
+		position:relative;
+		left:30px;
+		padding-left:10px;
+		height:180px;
+		top:30px;
+		}
+		.Btn{
+		position:relative;
+		top:50px;
+		}
+	</style>
+</head>
+<body>
+<div class="container">
+	<div class="col-md-12 	col-sm-12">
+		<h4 class="text-center text-primary">欢迎进入游戏大厅！</h4>
+		<div class="row">
+			<div class="col-md-3 well col-sm-3 room Room1">
+				
+			</div>
+			<div class="col-md-3 well col-sm-3 room col-md-offset-1 Room2">
+			
+			</div>
+			<div class="col-md-3 well col-sm-3 room col-md-offset-1 Room3">
+			
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3 well col-sm-3 room Room4">
+			
+			</div>
+			<div class="col-md-3 well col-sm-3 room col-md-offset-1 Room5">
+			
+			</div>
+			<div class="col-md-3 well col-sm-3 room col-md-offset-1 Room6">
+			
+		 	</div>
+		</div>
+		<div class="row Btn">
+		<button class="btn btn-info col-md-2 col-md-offset-1">上一页</button>
+		<button class="btn btn-danger col-md-2 col-md-offset-2">快速开始</button>
+		<button class="btn btn-info col-md-2 col-md-offset-1">下一页</button>
+		</div>
+	</div>
+</div>
+</body>
+<script type="text/javascript">
+$(function(){
+	$.ajax({
+	      url:"RoomServlet",
+	      type:"POST",
+	      dataType:"JSON",
+	       success:function(data){
+	    	   console.log(data);
+	    	   $.each(data,function(index,item){
+	    		   var javaroomid = item.roomId;
+					//var divnum="Room"+(index+1);
+					//console.log(divnum);
+	    		   console.log(javaroomid);
+	    		   $(".Room"+"index").append("<p>"+javaroomid+"</p>");
+	    		    
+	    	   })	   
+	       }
+	      })
+})
+</script>
+</html>

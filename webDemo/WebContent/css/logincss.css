@@ -1,0 +1,58 @@
+body {
+	background-color:#CCCCCC;/*设置页面背景色为浅灰色*/
+}
+#container{
+        		position: relative;
+        		background-color: white;
+        		width: 500px;
+        		height: 250px;
+        		border-radius: 3px;
+        		text-align: center;
+        		padding: 30px;
+        		margin: auto;
+        		top: 100px;
+        		box-shadow:3px 3px 5px #000; 
+        	}
+        	#container p{
+        		display: inline;
+        		font-size:20px;
+        		color: #7ad9f5;
+				letter-spacing: 0.04em;
+        	}
+        	.boder{
+        		background: #7ad9f5;
+        		border: none;
+        		height: 1px;
+        	}
+        	.btn{
+        		color: white;
+        		width: 80px;
+        		height: 30px;
+        		background: #7ad9f5;
+        		border: none;
+        		border-radius: 3px;
+        		margin-top: 20px;
+        		cursor: pointer;
+        	}
+        	#container div{
+        		margin-top:20px;
+        	}
+        	#container div p{
+        		font-size: 15px;
+        		display: inline;
+        		color: #7ad9f5;
+        	}
+        	#container div span{
+        	position: absolute;
+        	font-size: 13px;
+        	color: #c72c41;
+        	}
+                .register{
+                        position: relative;
+                        font-size: 10px;
+                        left: 30px;
+                }
+                .register a{
+                         color: gray;
+                         text-decoration: none;
+                }

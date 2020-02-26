@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+    $.ajax({
+      url:"http://localhost:8080/webDemo/DemoServlet",
+      type:"GET",
+      data:{"username":"admin","password":123},
+      dataType:"json",
+      success:function(data) {
+      //  获得相应数据，通过DOM操作来改变页面效果
+        console.log(data);
+        $("#room").text(data.roomName);
+      }
+            }
+    )
+    </script>
+  </head>
+ <body>
+  <p>hello world</p>
+  <div id="room"></div>
+  </body>
+</html>

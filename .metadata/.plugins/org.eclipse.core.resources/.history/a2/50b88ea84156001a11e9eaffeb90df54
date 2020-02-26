@@ -1,0 +1,43 @@
+package socket;
+
+import java.util.Map;
+
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.PathParam;
+import javax.websocket.server.ServerEndpoint;
+
+
+
+
+/*
+ * 要管的所有客户端
+ * 
+ * */
+@ServerEndpoint("/chat/{username}")
+public class scoketServer2 {
+	private Session session;
+	//当前服务端的所有客户端：用户名，当前用户的webSocket对象
+	private static Map<String, scoketServer2> clients;
+	
+	@OnOpen
+	public void onOpen(Session session) {
+		System.out.println("连接上线");
+		this.session=session;
+	}
+	@OnMessage
+	public void onMessage(String message,@PathParam(value="username")String name) {
+	
+	}
+	@OnClose
+	public void onClose() {
+		System.out.println("连接下线");
+	}
+	@OnError
+	public void onError(Throwable t) {
+	System.out.println("连接出错:"+t);
+}
+}

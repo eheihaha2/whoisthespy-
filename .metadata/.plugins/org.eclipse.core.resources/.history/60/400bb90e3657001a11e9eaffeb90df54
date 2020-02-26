@@ -1,0 +1,29 @@
+package entity;
+
+import java.util.List;
+
+public class Player {
+private String username;
+private String psaaword;
+public String getUsername() {
+	return username;
+}
+public void setUsername(String username) {
+	this.username = username;
+}
+public String getPsaaword() {
+	return psaaword;
+}
+public void setPsaaword(String psaaword) {
+	this.psaaword = psaaword;
+}
+public Player(String username, String psaaword) {
+	super();
+	this.username = username;
+	this.psaaword = psaaword;
+}
+public Player() {
+	super();
+	// TODO Auto-generated constructor stub
+}
+}

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+<link rel="stylesheet" href="css/bootstrap.css">
+<style type="text/css">
+	.show{
+			margin-right:0;
+			background-color:#f9f6f2;
+			height: 500px;
+			margin-top:20px;
+			border-radius: 10px;
+		}
+		.mss{
+			padding:20px 20px 40px 40px;
+			background-color:#beebe9;
+			height:120px;
+			margin-left:20px;;
+			margin-top:80px;
+			border-radius: 10px;
+		}
+		.wordsBtn{
+			position:relative;
+			padding-top:10px;
+		}
+}
+</style>
+	<title></title>
+</head>
+<body>
+	<div class="container">
+	<div class="row">
+		<div class="well text-center text-primary col-md-2 	col-sm-2 col-md-offset-4">词语显示</div>
+		<button class="btn wordsBtn btn-primary col-md-offset-1">分发词语</button><br />
+	</div>
+		<div class="row">
+			<div class="col-md-7 col-sm-7 show">
+				<div class="info">
+				<span class="name"></span>
+				<span class="msg"></span>
+				</div>
+				<div class="userinfo"></div>
+     		</div>
+     		<div class="col-md-4 col-sm-4 mss">
+     			<div class="row">
+				<span>用户名：</span>
+      			<input type="text" name="username"/>
+     			<button id="connBtn">建立连接</button><br />
+     			</div>
+			<span>信息：</span>
+     		<input type="text" name="info"/>
+      		<button id="subBtnAll">群发</button><br />
+			<span>私聊：</span>
+     		<select id="userList">
+			</select>
+			<button id="subBtn">私发</button>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	var ws=null;
+	var username=null;
+	var url="ws://localhost:8080/webDemo/chatRoom/";
+		// 后续的消息添加都是用其做二次克隆
+      	var info = $(".info").clone();
+		//点击建立连接的按钮 
+      	$("#connBtn").on("click",function(){
+      		if("WebSocket" in window){
+      			username = $("input[name='username']").val();
+      			ws = new WebSocket(url+username);
+      			//有了webSocket连接对象之后，我就开始监听消息
+      			//服务器端的所有消息都会来到这
+      			ws.onmessage = function(evt){
+      				var received_msg = evt.data;
+      				var jsonReceive_msg = JSON.parse(received_msg);
+      				var head = jsonReceive_msg.head;//获得服务器数据，解析数据获得数据类型
+      				var data =jsonReceive_msg.data;//真正的data所在
+      				switch (head) {
+      					case "sendAll":
+      					sendAll(data);
+      						break;
+      					case "sendTo":
+      					sendTo(data);
+      						break;
+      					case "onLine":
+      					onLine(data);
+      						break;
+      					case "userList":
+      					userList(data);
+      						break;
+      					default:
+      						break;
+      				}
+      			}
+      		}else{
+      			alert("您的浏览器不支持 WebSocket!");
+      		}
+      	})
+      	
+      	//细节定义每种功能的数据接口
+      	//构建JSON格式发送给服务器：{from:来自谁,msg:消息本身}
+      	function sendAll(data){
+      		var infoDiv = info.clone();//这个就是我要渲染的dom节点
+      		//用于把从服务器端获得的JSON字符串的data解析为原生JS值
+      		//var jsonData=JSON.parse(data);
+      		infoDiv.find(".name").text("来自于："+data.from+"(群发)");
+      		infoDiv.find(".msg").text(data.msg);
+      		$(".info").parent().append(infoDiv);
+      	}
+      	// 构建JSON格式发送给服务器：{from:来自谁,msg:消息本身}
+      	function sendTo(data){
+      		var infoDiv = info.clone();//这个就是我要渲染的dom节点
+      		infoDiv.find(".name").text("来自于："+data.from+"(私发)");
+      		infoDiv.find(".msg").text(data.msg);
+      		$(".info").parent().append(infoDiv);
+      	}
+      	// 构建JSON格式发送给服务器：{name:上线人姓名}
+      	function onLine(data){	
+      	//$(".userinfo").empty();
+      	console.log(data);
+      	$(".userinfo").append("<p>"+"【"+data.name+"上线了】"+"</p>");
+      	}
+      	// 构建JSON格式发送给服务器：[用户1,用户2]
+      	function userList(data){
+      		$("#userList").empty();
+      		var jsonData=JSON.parse(data);
+      		$("#userList").append("<option>请选择</option>");
+      		$.each(jsonData,function(index,item){
+      			$("#userList").append("<option value="+item+">"+item+"</option>");
+      		})
+      	}
+
+      	//点击群发按钮
+      	$("#subBtnAll").on("click",function(){
+      		//var sentName = $("input[name='username']").val();
+      		var msg = $("input[name='info']").val();
+      		console.log(msg);
+      		var jsonMsg={
+      			"head":"sendAll",
+      			"data":msg
+      			//"from":sentName,
+      			//"msg":msg
+      		}
+      		console.log(jsonMsg);
+      		//var subAllEnd =JSON.stringify(jsonMsg);
+      		ws.send(JSON.stringify(jsonMsg));
+      	})
+      	//点击私发按钮 
+      	$("#subBtn").on("click",function(){
+      		var msg=$("input[name=info]").val();
+      		var toUser=$("#userList").val();
+      		console.log(toUser);
+      		var jsonMsg={
+      			"head":"sendTo",
+      			"data":{
+      				"to":toUser,
+      				"msg":msg
+      			}
+      		}
+      		console.log(jsonMsg);
+      		ws.send(JSON.stringify(jsonMsg));
+      	})
+</script>
+</html>

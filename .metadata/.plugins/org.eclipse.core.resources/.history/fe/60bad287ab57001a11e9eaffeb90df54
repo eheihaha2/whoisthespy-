@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>游戏大厅</title>
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+<link rel="stylesheet" href="css/bootstrap.css">
+<link rel="stylesheet" href="css/lobby.css">
+<style type="text/css">
+		.room{
+			top:100px;
+			background-color:black;
+			height:50px;
+		}
+	</style>
+</head>
+<body>
+<div class="container">
+	<div class="col-md-12 	col-sm-12">
+		<h4 class="text-center text-primary">欢迎进入游戏大厅！</h4>
+		<div class="col-md-4  col-sm-4 room">
+			
+		</div>
+	</div>
+</div>
+</body>
+</html>

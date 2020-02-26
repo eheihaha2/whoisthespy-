@@ -1,0 +1,14 @@
+package entity;
+
+import java.util.List;
+
+public class Player {
+private String username;
+private String psaaword;
+
+public Player() {
+	super();
+	// TODO Auto-generated constructor stub
+}
+
+}

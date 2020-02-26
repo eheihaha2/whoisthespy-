@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/cityjson.js"></script>
+</head>
+<body>
+	省:
+	<select id="province">
+	<option>请选择</option>
+	</select>
+	
+	市:
+	<select id="city">
+	<option>请选择</option>
+	</select>
+	
+	区:
+	<select id="zone">
+	<option>请选择</option>
+	</select>
+</body>
+<script type="text/javascript">
+	$(function(){
+	//将cityjson.js中的data变量解析后放置到下拉列表
+	//item:代表的就是一个省的信息,省的名字
+	$.each(data,function(index,item){
+		//console.log(index);//继续将信息作为option节点添加到select下面
+		$("#province").append("<option value="+index+">"+item.name+"</option>");
+	})
+	
+   //事件的概念：一点击省，得到我点击的是哪个省，根据这个数据再去改该省对应的市。
+	$("#province").bind("change",function(){
+	    $("#city").empty();		
+		var proId = $(this).val();
+		console.log(proId);
+		m=proId;
+		var pro = data[proId];
+		console.log(pro);
+		$.each(pro.child,function(index,item){
+			$("#city").append("<option value="+index+">"+item.name+"</option>");
+		})
+	}) 
+	
+
+		$("#city").bind("change",function(){
+		$("#zone").empty();
+		var cityId = $(this).val();
+		var city=data[m].child;
+		var n=city[cityId];
+		console.log(cityId);
+		console.log(city[cityId]);
+		$.each(n.child,function(index,item){
+			$("#zone").append("<option>"+item+"</option>");
+	   }) 	
+}) 
+})
+
+</script>
+</html>
